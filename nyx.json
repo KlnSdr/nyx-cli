@@ -1,0 +1,16 @@
+{
+  "compiler": {
+    "version": 21
+  },
+  "project": {
+    "name": "nyx-cli",
+    "version": "1.0",
+    "dependencies": [
+      {
+        "group": "dobby",
+        "name": "dobby",
+        "version": "1.6"
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="nyx-cli:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/nyx_cli_jar</output-path>
+    <root id="archive" name="nyx-cli.jar">
+      <element id="module-output" name="nyx-cli" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../dobby/out/artifacts/dobby_jar/dobby.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
