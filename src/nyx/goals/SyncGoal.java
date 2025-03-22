@@ -13,7 +13,7 @@ public class SyncGoal implements Goal {
 
     @Override
     public GoalResult execute() {
-        System.out.println("Syncing with remote repository...");
+        LOGGER.info("Syncing with remote repository...");
         final NewJson projectConfig = ProjectHelper.getProjectConfig();
 
         if (projectConfig == null) {

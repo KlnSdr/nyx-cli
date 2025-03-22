@@ -8,9 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import static nyx.util.FileHelper.createDirIfNotExists;
+import static nyx.util.FileHelper.getHome;
+
 public class RepoHelper {
     private static final Logger LOGGER = new Logger(RepoHelper.class, true);
-    private static final String repoDir = System.getProperty("user.home") + "/.nyx";
+    private static final String repoDir = getHome() + "/.nyx";
     private final String remoteRepoUrl;
 
     public static RepoHelper getInstance(String remoteRepoUrl) {
@@ -59,16 +62,5 @@ public class RepoHelper {
     private void createRepoIfNotExists() {
         // create the dir ~/.nyx if it doesn't exist
         createDirIfNotExists(repoDir);
-    }
-
-    private void createDirIfNotExists(String path) {
-        final File file = new File(path);
-        if (!file.exists()) {
-            final boolean didCreate = file.mkdir();
-            if (!didCreate) {
-                LOGGER.error("Failed to create directory: " + path);
-                System.exit(1);
-            }
-        }
     }
 }
