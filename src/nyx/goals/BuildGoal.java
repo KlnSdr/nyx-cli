@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static nyx.util.FileHelper.createDirIfNotExists;
+import static nyx.util.ProcessHelper.executeCommand;
 import static nyx.util.ProjectHelper.getProjectDir;
 
 public class BuildGoal implements Goal {
@@ -112,32 +113,6 @@ public class BuildGoal implements Goal {
         }
 
         return GoalResult.SUCCESS;
-    }
-
-    private boolean executeCommand(String command) {
-        try {
-            final ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", command);
-            processBuilder.redirectErrorStream(true);
-            final Process process = processBuilder.start();
-
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                LOGGER.debug(line);
-            }
-
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                LOGGER.error("Failed to execute command \"" + command + "\". Exit code: " + exitCode);
-                return false;
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error executing command: " + command);
-            LOGGER.trace(e);
-            return false;
-        }
-
-        return true;
     }
 
     private String buildClassPath(NewJson config, String projectRoot) {
