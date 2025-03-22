@@ -58,6 +58,19 @@ public class BuildGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
+        final String copyCommand = String.format(
+                "cd %s && find . -type f ! -name '*.java' -exec cp --parents {} %s \\;",
+                projectDir + "/src", buildDir + "/classes"
+        );
+
+        LOGGER.info("copying resources...");
+        LOGGER.debug("Executing command: " + copyCommand);
+
+        if (!executeCommand(copyCommand)) {
+            LOGGER.error("Failed to copy resources");
+            return GoalResult.FAILURE;
+        }
+
         LOGGER.info("Extracting JAR dependencies...");
         final String[] jarDependencies = classPath.split(":");
         for (String jar : jarDependencies) {
