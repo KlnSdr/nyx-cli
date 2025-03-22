@@ -100,7 +100,7 @@ public class BuildGoal implements Goal {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                LOGGER.info(line);
+                LOGGER.debug(line);
             }
 
             int exitCode = process.waitFor();
