@@ -9,17 +9,17 @@ public class HelpGoal implements Goal {
             new CleanGoal(),
             new DebugGoal(),
             new HelpGoal(),
-            new InstallGoal(),
             new InitGoal(),
+            new InstallGoal(),
+            new PushGoal(),
             new RunGoal(),
-            new BuildGoal(),
             new SyncGoal(),
             new VersionGoal()
     );
 
     @Override
     public String getHelp() {
-        return "";
+        return "Prints this help message";
     }
 
     @Override

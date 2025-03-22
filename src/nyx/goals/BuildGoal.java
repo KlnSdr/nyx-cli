@@ -18,7 +18,7 @@ public class BuildGoal implements Goal {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Compiles the project and creates a JAR file. Runs sync and clean goals before building.";
     }
 
     @Override

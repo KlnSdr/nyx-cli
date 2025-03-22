@@ -6,7 +6,7 @@ import dobby.util.logging.Logger;
 public class DebugGoal implements Goal {
     @Override
     public String getHelp() {
-        return "";
+        return "Sets the log level to debug";
     }
 
     @Override

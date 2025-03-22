@@ -17,7 +17,7 @@ public class InstallGoal implements Goal {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Installs the project JAR file to the local repository. Runs build goal before installing.";
     }
 
     @Override

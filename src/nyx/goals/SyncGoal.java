@@ -13,7 +13,7 @@ public class SyncGoal implements Goal {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Downloads dependencies from the remote repository";
     }
 
     @Override

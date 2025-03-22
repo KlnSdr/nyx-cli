@@ -5,7 +5,7 @@ import dobby.util.logging.Logger;
 public class PushGoal implements Goal {
     @Override
     public String getHelp() {
-        return "";
+        return "Pushes the artifact to the remote repository";
     }
 
     @Override

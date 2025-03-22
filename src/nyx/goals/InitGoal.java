@@ -5,7 +5,7 @@ import dobby.util.logging.Logger;
 public class InitGoal implements Goal {
     @Override
     public String getHelp() {
-        return "";
+        return "Initializes a new Nyx project";
     }
 
     @Override

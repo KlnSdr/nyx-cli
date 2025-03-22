@@ -5,7 +5,7 @@ import dobby.util.logging.Logger;
 public class RunGoal implements Goal {
     @Override
     public String getHelp() {
-        return "";
+        return "Runs the artifact";
     }
 
     @Override

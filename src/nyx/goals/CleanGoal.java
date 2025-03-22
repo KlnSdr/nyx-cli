@@ -11,7 +11,7 @@ public class CleanGoal implements Goal {
 
     @Override
     public String getHelp() {
-        return "";
+        return "Cleans up the build directory";
     }
 
     @Override
