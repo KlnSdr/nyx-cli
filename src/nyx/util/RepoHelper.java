@@ -11,14 +11,23 @@ import java.net.URL;
 public class RepoHelper {
     private static final Logger LOGGER = new Logger(RepoHelper.class, true);
     private static final String repoDir = System.getProperty("user.home") + "/.nyx";
+    private final String remoteRepoUrl;
 
-    public static boolean existsInRepo(String group, String name, String version) {
+    public static RepoHelper getInstance(String remoteRepoUrl) {
+        return new RepoHelper(remoteRepoUrl);
+    }
+
+    private RepoHelper(String remoteRepoUrl) {
+        this.remoteRepoUrl = remoteRepoUrl;
+    }
+
+    public boolean existsInRepo(String group, String name, String version) {
         createRepoIfNotExists();
         final File file = new File(repoDir, group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
         return file.exists();
     }
 
-    public static boolean downloadToRepo(String group, String name, String version) {
+    public boolean downloadToRepo(String group, String name, String version) {
         createRepoIfNotExists();
         LOGGER.info("Downloading dependency: " + group + ":" + name + ":" + version);
 
@@ -27,10 +36,10 @@ public class RepoHelper {
         createDirIfNotExists(repoDir + "/" + group + "/" + name);
         createDirIfNotExists(repoDir + "/" + group + "/" + name + "/" + version);
 
-        return downloadFile("http://localhost:3000/" + "/" + name + "/v" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
+        return downloadFile(remoteRepoUrl + "/" + name + "/v" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
     }
 
-    private static boolean downloadFile(String fileURL, String savePath) {
+    private boolean downloadFile(String fileURL, String savePath) {
         try (InputStream in = new URL(fileURL).openStream();
              OutputStream out = new FileOutputStream(savePath)) {
 
@@ -47,12 +56,12 @@ public class RepoHelper {
         }
     }
 
-    private static void createRepoIfNotExists() {
+    private void createRepoIfNotExists() {
         // create the dir ~/.nyx if it doesn't exist
         createDirIfNotExists(repoDir);
     }
 
-    private static void createDirIfNotExists(String path) {
+    private void createDirIfNotExists(String path) {
         final File file = new File(path);
         if (!file.exists()) {
             final boolean didCreate = file.mkdir();

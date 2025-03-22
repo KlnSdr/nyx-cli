@@ -20,6 +20,8 @@ public class SyncGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
+        final RepoHelper repo = RepoHelper.getInstance(projectConfig.getString("remoteRepoUrl"));
+
         LOGGER.info("syncing dependencies for project: " + projectConfig.getString("project.name"));
 
         final List<NewJson> dependencies = projectConfig.getList("project.dependencies").stream().map(o -> (NewJson) o).collect(Collectors.toList());
@@ -30,8 +32,8 @@ public class SyncGoal implements Goal {
             final String version = dependency.getString("version");
             LOGGER.info("syncing dependency: " + group + ":" + name + ":" + version);
 
-            if (!RepoHelper.existsInRepo(group, name, version)) {
-                final boolean success = RepoHelper.downloadToRepo(group, name, version);
+            if (!repo.existsInRepo(group, name, version)) {
+                final boolean success = repo.downloadToRepo(group, name, version);
 
                 if (!success) {
                     LOGGER.error("Failed to sync dependency: " + group + ":" + name + ":" + version);

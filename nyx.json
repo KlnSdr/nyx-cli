@@ -2,6 +2,7 @@
   "compiler": {
     "version": 21
   },
+  "remoteRepoUrl": "http://localhost:3000",
   "project": {
     "name": "nyx-cli",
     "version": "1.0",

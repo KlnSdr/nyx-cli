@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProjectHelper {
-    private static final Logger LOGGER = new Logger(ProjectHelper.class);
+    private static final Logger LOGGER = new Logger(ProjectHelper.class, true);
     public static String getProjectDir() {
         return System.getProperty("user.dir");
     }
@@ -44,6 +44,10 @@ public class ProjectHelper {
 
     public static boolean validateProjectConfig(NewJson projectConfig) {
         if (!projectConfig.hasKeys("compiler", "project")) {
+            return false;
+        }
+
+        if (!projectConfig.hasKeys("remoteRepoUrl")) {
             return false;
         }
 
