@@ -12,6 +12,16 @@ public class SyncGoal implements Goal {
     private static final Logger LOGGER = new Logger(SyncGoal.class, true);
 
     @Override
+    public String getHelp() {
+        return "";
+    }
+
+    @Override
+    public String getName() {
+        return "sync";
+    }
+
+    @Override
     public GoalResult execute() {
         LOGGER.info("Syncing with remote repository...");
         final NewJson projectConfig = ProjectHelper.getProjectConfig();

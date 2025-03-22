@@ -17,6 +17,16 @@ public class BuildGoal implements Goal {
     private static final Logger LOGGER = new Logger(BuildGoal.class, true);
 
     @Override
+    public String getHelp() {
+        return "";
+    }
+
+    @Override
+    public String getName() {
+        return "build";
+    }
+
+    @Override
     public GoalResult execute() {
         LOGGER.info("Building project...");
 

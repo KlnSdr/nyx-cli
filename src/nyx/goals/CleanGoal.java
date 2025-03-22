@@ -10,6 +10,16 @@ public class CleanGoal implements Goal {
     private static final Logger LOGGER = new Logger(CleanGoal.class, true);
 
     @Override
+    public String getHelp() {
+        return "";
+    }
+
+    @Override
+    public String getName() {
+        return "clean";
+    }
+
+    @Override
     public GoalResult execute() {
         final String projectDir = getProjectDir();
         LOGGER.info(String.format("Cleaning up %s", projectDir));

@@ -16,6 +16,16 @@ public class InstallGoal implements Goal {
     private static final Logger LOGGER = new Logger(InstallGoal.class, true);
 
     @Override
+    public String getHelp() {
+        return "";
+    }
+
+    @Override
+    public String getName() {
+        return "install";
+    }
+
+    @Override
     public GoalResult execute() {
         if (new BuildGoal().execute() == GoalResult.FAILURE) {
             return GoalResult.FAILURE;

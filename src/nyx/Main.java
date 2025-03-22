@@ -55,13 +55,15 @@ public class Main {
                 return new VersionGoal();
             case "debug":
                 return new DebugGoal();
+            case "help":
+                return new HelpGoal();
             default:
                 return null;
         }
     }
 
     private static boolean isKnownGoal(String goal) {
-        final String[] knownGoals = {"sync", "build", "install", "push", "clean", "init", "run", "version", "debug"};
+        final String[] knownGoals = {"sync", "build", "install", "push", "clean", "init", "run", "version", "debug", "help"};
         return Arrays.asList(knownGoals).contains(goal);
     }
 }
