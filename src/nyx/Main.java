@@ -47,8 +47,6 @@ public class Main {
                 return new PushGoal();
             case "clean":
                 return new CleanGoal();
-            case "init":
-                return new InitGoal();
             case "run":
                 return new RunGoal();
             case "version":
@@ -63,7 +61,7 @@ public class Main {
     }
 
     private static boolean isKnownGoal(String goal) {
-        final String[] knownGoals = {"sync", "build", "install", "push", "clean", "init", "run", "version", "debug", "help"};
+        final String[] knownGoals = {"sync", "build", "install", "push", "clean", "run", "version", "debug", "help"};
         return Arrays.asList(knownGoals).contains(goal);
     }
 }
