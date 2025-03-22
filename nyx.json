@@ -1,16 +1,18 @@
 {
   "compiler": {
-    "version": 21
+    "version": "11"
   },
   "remoteRepoUrl": "http://localhost:3000",
   "project": {
+    "group": "nyx",
     "name": "nyx-cli",
     "version": "1.0",
+    "entry": "nyx.Main",
     "dependencies": [
       {
         "group": "dobby",
         "name": "dobby",
-        "version": "1.6"
+        "version": "1.7"
       }
     ]
   }

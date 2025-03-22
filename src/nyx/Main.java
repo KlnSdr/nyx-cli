@@ -1,16 +1,19 @@
 package nyx;
 
+import dobby.util.logging.Logger;
+import nyx.goals.BuildGoal;
 import nyx.goals.GoalResult;
-import nyx.goals.SyncGoal;
 
 public class Main {
+    private static final Logger LOGGER = new Logger(Main.class, true);
+
     public static void main(String[] args) {
-        final GoalResult result = new SyncGoal().execute();
+        final GoalResult result = new BuildGoal().execute();
 
         if (result == GoalResult.SUCCESS) {
-            System.out.println("Sync successful!");
+            LOGGER.info("Build successful!");
         } else {
-            System.out.println("Sync failed!");
+            LOGGER.error("Build failed!");
         }
     }
 }

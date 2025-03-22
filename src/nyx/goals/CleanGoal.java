@@ -16,7 +16,7 @@ public class CleanGoal implements Goal {
 
         final File buildDir = new File(projectDir + "/build");
         if (buildDir.exists()) {
-            final boolean success = buildDir.delete();
+            final boolean success = deleteDirectory(buildDir);
             if (!success) {
                 LOGGER.error("Failed to delete build directory");
                 return GoalResult.FAILURE;
@@ -24,5 +24,15 @@ public class CleanGoal implements Goal {
         }
 
         return GoalResult.SUCCESS;
+    }
+
+    private boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
     }
 }

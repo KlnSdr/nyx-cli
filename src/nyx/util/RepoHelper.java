@@ -24,6 +24,10 @@ public class RepoHelper {
         this.remoteRepoUrl = remoteRepoUrl;
     }
 
+    public static String getRepoDir() {
+        return repoDir;
+    }
+
     public boolean existsInRepo(String group, String name, String version) {
         createRepoIfNotExists();
         final File file = new File(repoDir, group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");

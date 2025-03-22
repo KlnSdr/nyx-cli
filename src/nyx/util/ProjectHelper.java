@@ -55,7 +55,7 @@ public class ProjectHelper {
             return false;
         }
 
-        if (!projectConfig.hasKeys("project.name", "project.dependencies", "project.version")) {
+        if (!projectConfig.hasKeys("project.name", "project.dependencies", "project.version", "project.entry", "project.group")) {
             return false;
         }
 
