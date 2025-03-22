@@ -2,7 +2,7 @@
   "compiler": {
     "version": "11"
   },
-  "remoteRepoUrl": "http://localhost:3000",
+  "remoteRepoUrl": "https://repo.klnsdr.com",
   "project": {
     "group": "nyx",
     "name": "nyx-cli",
