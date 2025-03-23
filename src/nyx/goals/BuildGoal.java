@@ -6,6 +6,10 @@ import nyx.config.ProjectConfig;
 import nyx.util.ProjectHelper;
 import nyx.util.RepoHelper;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import static nyx.util.FileHelper.createDirIfNotExists;
@@ -67,15 +71,9 @@ public class BuildGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
-        final String copyCommand = String.format(
-                "cd %s && find . -type f ! -name '*.java' -exec cp --parents {} %s \\;",
-                projectDir + "/src", buildDir + "/classes"
-        );
-
         LOGGER.info("copying resources...");
-        LOGGER.debug("Executing command: " + copyCommand);
 
-        if (!executeCommand(copyCommand)) {
+        if (!copyResources(projectDir + "/src", buildDir + "/classes", config.getExclude())) {
             LOGGER.error("Failed to copy resources");
             return GoalResult.FAILURE;
         }
@@ -111,6 +109,56 @@ public class BuildGoal implements Goal {
         }
 
         return GoalResult.SUCCESS;
+    }
+
+    private boolean copyResources(String projectDir, String buildDir, List<String> exclude) {
+        LOGGER.debug("Copying resources from " + projectDir + " to " + buildDir);
+        final File projectDirFile = new File(projectDir);
+        final File buildDirFile = new File(buildDir);
+
+        if (!projectDirFile.exists()) {
+            LOGGER.error("Project directory does not exist: " + projectDir);
+            return false;
+        }
+
+        if (!buildDirFile.exists()) {
+            LOGGER.error("Build directory does not exist: " + buildDir);
+            return false;
+        }
+
+        final File[] files = projectDirFile.listFiles();
+
+        if (files == null) {
+            LOGGER.error("Failed to list files in project directory: " + projectDir);
+            return false;
+        }
+
+        for (File file : files) {
+            final String fileName = file.getName();
+            final String destPath = buildDir + "/" + fileName;
+
+            if (exclude.contains(fileName) || fileName.endsWith(".java")) {
+                LOGGER.debug("Excluding file: " + fileName);
+                continue;
+            }
+
+            if (file.isDirectory()) {
+                createDirIfNotExists(destPath);
+                if (!copyResources(file.getAbsolutePath(), destPath, exclude)) {
+                    return false;
+                }
+            } else {
+                try {
+                    Files.copy(file.toPath(), new File(destPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    LOGGER.error("Failed to copy file: " + file.getAbsolutePath());
+                    LOGGER.trace(e);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private String buildClassPath(ProjectConfig config, String projectRoot) {

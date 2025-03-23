@@ -56,6 +56,10 @@ public class ProjectHelper {
             return false;
         }
 
+        if (!projectConfig.hasKey("exclude")) {
+            return false;
+        }
+
         if (!projectConfig.hasKeys("project.name", "project.dependencies", "project.version", "project.entry", "project.group")) {
             return false;
         }

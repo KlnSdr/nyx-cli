@@ -13,8 +13,9 @@ public class ProjectConfig {
     private final String projectVersion;
     private final String entryPoint;
     private final List<Dependency> dependencies;
+    private final List<String> exclude;
 
-    public ProjectConfig(String compilerVersion, String remoteRepoUrl, String projectGroup, String projectName, String projectVersion, String entryPoint, List<Dependency> dependencies) {
+    public ProjectConfig(String compilerVersion, String remoteRepoUrl, String projectGroup, String projectName, String projectVersion, String entryPoint, List<Dependency> dependencies, List<String> exclude) {
         this.compilerVersion = compilerVersion;
         this.remoteRepoUrl = remoteRepoUrl;
         this.projectGroup = projectGroup;
@@ -22,6 +23,7 @@ public class ProjectConfig {
         this.projectVersion = projectVersion;
         this.entryPoint = entryPoint;
         this.dependencies = dependencies;
+        this.exclude = exclude;
     }
 
     public static ProjectConfig fromJson(NewJson json) {
@@ -32,7 +34,8 @@ public class ProjectConfig {
                 json.getString("project.name"),
                 json.getString("project.version"),
                 json.getString("project.entry"),
-                json.getList("project.dependencies").stream().map(o -> (NewJson) o).map(Dependency::fromJson).collect(Collectors.toList())
+                json.getList("project.dependencies").stream().map(o -> (NewJson) o).map(Dependency::fromJson).collect(Collectors.toList()),
+                json.getList("exclude").stream().map(Object::toString).collect(Collectors.toList())
         );
     }
 
@@ -62,5 +65,9 @@ public class ProjectConfig {
 
     public List<Dependency> getDependencies() {
         return dependencies;
+    }
+
+    public List<String> getExclude() {
+        return exclude;
     }
 }

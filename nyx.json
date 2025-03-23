@@ -3,6 +3,7 @@
     "version": "11"
   },
   "remoteRepoUrl": "https://repo.klnsdr.com",
+  "exclude": [],
   "project": {
     "group": "nyx",
     "name": "nyx-cli",
