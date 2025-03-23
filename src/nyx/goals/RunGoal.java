@@ -1,7 +1,7 @@
 package nyx.goals;
 
-import dobby.util.json.NewJson;
 import dobby.util.logging.Logger;
+import nyx.config.ProjectConfig;
 import nyx.util.ProjectHelper;
 
 import java.io.File;
@@ -23,14 +23,14 @@ public class RunGoal implements Goal {
 
     @Override
     public GoalResult execute() {
-        final NewJson config = ProjectHelper.getProjectConfig();
+        final ProjectConfig config = ProjectHelper.getProjectConfig();
 
         if (config == null) {
             logger.error("Failed to read project config");
             return GoalResult.FAILURE;
         }
 
-        final String jarName = config.getString("project.name") + "-" + config.getString("project.version") + ".jar";
+        final String jarName = config.getProjectName() + "-" + config.getProjectVersion() + ".jar";
         final String jarPath = ProjectHelper.getProjectDir() + "/build/" + jarName;
 
         if (!new File(jarPath).exists()) {

@@ -3,6 +3,7 @@ package nyx.util;
 import dobby.exceptions.MalformedJsonException;
 import dobby.util.json.NewJson;
 import dobby.util.logging.Logger;
+import nyx.config.ProjectConfig;
 import nyx.exceptions.InvalidConfigException;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class ProjectHelper {
         return System.getProperty("user.dir");
     }
 
-    public static NewJson getProjectConfig() {
+    public static ProjectConfig getProjectConfig() {
         final String projectDir = getProjectDir();
         final String content;
 
@@ -31,7 +32,7 @@ public class ProjectHelper {
             fileInputStream.close();
             final NewJson projectConfig = NewJson.parse(content);
             if (validateProjectConfig(projectConfig)) {
-                return projectConfig;
+                return ProjectConfig.fromJson(projectConfig);
             } else {
                 throw new InvalidConfigException();
             }
@@ -42,7 +43,7 @@ public class ProjectHelper {
         }
     }
 
-    public static boolean validateProjectConfig(NewJson projectConfig) {
+    private static boolean validateProjectConfig(NewJson projectConfig) {
         if (!projectConfig.hasKeys("compiler", "project")) {
             return false;
         }

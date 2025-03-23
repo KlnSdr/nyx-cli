@@ -1,12 +1,12 @@
 package nyx.goals;
 
-import dobby.util.json.NewJson;
 import dobby.util.logging.Logger;
+import nyx.config.Dependency;
+import nyx.config.ProjectConfig;
 import nyx.util.ProjectHelper;
 import nyx.util.RepoHelper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SyncGoal implements Goal {
     private static final Logger LOGGER = new Logger(SyncGoal.class, true);
@@ -24,22 +24,22 @@ public class SyncGoal implements Goal {
     @Override
     public GoalResult execute() {
         LOGGER.info("Syncing with remote repository...");
-        final NewJson projectConfig = ProjectHelper.getProjectConfig();
+        final ProjectConfig projectConfig = ProjectHelper.getProjectConfig();
 
         if (projectConfig == null) {
             return GoalResult.FAILURE;
         }
 
-        final RepoHelper repo = RepoHelper.getInstance(projectConfig.getString("remoteRepoUrl"));
+        final RepoHelper repo = RepoHelper.getInstance(projectConfig.getRemoteRepoUrl());
 
-        LOGGER.info("syncing dependencies for project: " + projectConfig.getString("project.name"));
+        LOGGER.info("syncing dependencies for project: " + projectConfig.getProjectName());
 
-        final List<NewJson> dependencies = projectConfig.getList("project.dependencies").stream().map(o -> (NewJson) o).collect(Collectors.toList());
+        final List<Dependency> dependencies = projectConfig.getDependencies();
 
-        for (NewJson dependency : dependencies) {
-            final String group = dependency.getString("group");
-            final String name = dependency.getString("name");
-            final String version = dependency.getString("version");
+        for (Dependency dependency : dependencies) {
+            final String group = dependency.getGroup();
+            final String name = dependency.getName();
+            final String version = dependency.getVersion();
             LOGGER.info("syncing dependency: " + group + ":" + name + ":" + version);
 
             if (!repo.existsInRepo(group, name, version)) {

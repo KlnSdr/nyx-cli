@@ -1,14 +1,12 @@
 package nyx.goals;
 
-import dobby.util.json.NewJson;
 import dobby.util.logging.Logger;
+import nyx.config.Dependency;
+import nyx.config.ProjectConfig;
 import nyx.util.ProjectHelper;
 import nyx.util.RepoHelper;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static nyx.util.FileHelper.createDirIfNotExists;
 import static nyx.util.ProcessHelper.executeCommand;
@@ -46,7 +44,7 @@ public class BuildGoal implements Goal {
 
         createDirIfNotExists(buildDir);
 
-        final NewJson config = ProjectHelper.getProjectConfig();
+        final ProjectConfig config = ProjectHelper.getProjectConfig();
 
         if (config == null) {
             LOGGER.error("Failed to read project config");
@@ -59,7 +57,7 @@ public class BuildGoal implements Goal {
                 "javac -cp %s -d %s --release %s %s",
                 classPath,
                 buildDir + "/classes",
-                config.getString("compiler.version"), projectDir + "/src/" + config.getString("project.entry").replace(".", "/") + ".java");
+                config.getCompilerVersion(), projectDir + "/src/" + config.getEntryPoint().replace(".", "/") + ".java");
 
         LOGGER.info("compiling class files...");
         LOGGER.debug("Executing command: " + buildCommand);
@@ -99,9 +97,9 @@ public class BuildGoal implements Goal {
         final String jarCommand = String.format(
                 "jar --create --file %s/%s-%s.jar --main-class=%s -C %s/classes .",
                 buildDir,
-                config.getString("project.name"),
-                config.getString("project.version"),
-                config.getString("project.entry"),
+                config.getProjectName(),
+                config.getProjectVersion(),
+                config.getEntryPoint(),
                 buildDir);
 
         LOGGER.info("creating jar file...");
@@ -115,16 +113,16 @@ public class BuildGoal implements Goal {
         return GoalResult.SUCCESS;
     }
 
-    private String buildClassPath(NewJson config, String projectRoot) {
+    private String buildClassPath(ProjectConfig config, String projectRoot) {
         final StringBuilder classPath = new StringBuilder();
 
         final String repoDir = RepoHelper.getRepoDir();
-        final List<NewJson> dependencies = config.getList("project.dependencies").stream().map(o -> (NewJson) o).collect(Collectors.toList());
+        final List<Dependency> dependencies = config.getDependencies();
 
-        for (NewJson dependency : dependencies) {
-            final String group = dependency.getString("group");
-            final String name = dependency.getString("name");
-            final String version = dependency.getString("version");
+        for (Dependency dependency : dependencies) {
+            final String group = dependency.getGroup();
+            final String name = dependency.getName();
+            final String version = dependency.getVersion();
             classPath
                     .append(repoDir)
                     .append("/")
