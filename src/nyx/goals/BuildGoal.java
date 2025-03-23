@@ -9,8 +9,11 @@ import nyx.util.RepoHelper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static nyx.util.FileHelper.createDirIfNotExists;
 import static nyx.util.ProcessHelper.executeCommand;
@@ -58,16 +61,44 @@ public class BuildGoal implements Goal {
         final String classPath = buildClassPath(config, projectDir + "/src");
 
         final String buildCommand = String.format(
-                "javac -cp %s -d %s --release %s %s",
+                "javac -cp %s -d %s --release %s @sources.list",
                 classPath,
                 buildDir + "/classes",
-                config.getCompilerVersion(), projectDir + "/src/" + config.getEntryPoint().replace(".", "/") + ".java");
+                config.getCompilerVersion());
 
         LOGGER.info("compiling class files...");
-        LOGGER.debug("Executing command: " + buildCommand);
 
+        LOGGER.debug("Finding source files...");
+
+        final List<String> sourceFiles = findSourceFiles();
+
+        if (sourceFiles == null) {
+            LOGGER.error("Failed to find source files");
+            return GoalResult.FAILURE;
+        }
+
+        for (String sourceFile : sourceFiles) {
+            LOGGER.debug("Compiling: " + sourceFile);
+        }
+
+        try {
+            Files.write(Paths.get("sources.list"), sourceFiles);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write source files to sources.list");
+            LOGGER.trace(e);
+            return GoalResult.FAILURE;
+        }
+
+        LOGGER.debug("Executing command: " + buildCommand);
         if (!executeCommand(buildCommand)) {
             LOGGER.error("Failed to compile class files");
+            return GoalResult.FAILURE;
+        }
+
+        final boolean didDeleteSourcesList = new File("sources.list").delete();
+
+        if (!didDeleteSourcesList) {
+            LOGGER.error("Failed to delete sources.list");
             return GoalResult.FAILURE;
         }
 
@@ -109,6 +140,23 @@ public class BuildGoal implements Goal {
         }
 
         return GoalResult.SUCCESS;
+    }
+
+    private List<String> findSourceFiles() {
+        String srcDir = "src"; // Change this to match your project structure
+        List<String> javaFiles;
+        try {
+            javaFiles = Files.walk(Paths.get(srcDir))
+                    .map(Path::toString)
+                    .filter(string -> string.endsWith(".java"))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            LOGGER.error("Failed to find source files");
+            LOGGER.trace(e);
+            return null;
+        }
+
+        return javaFiles;
     }
 
     private boolean copyResources(String projectDir, String buildDir, List<String> exclude) {

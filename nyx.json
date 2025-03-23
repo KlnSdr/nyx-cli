@@ -7,7 +7,7 @@
   "project": {
     "group": "nyx",
     "name": "nyx-cli",
-    "version": "1.0",
+    "version": "1.1",
     "entry": "nyx.Main",
     "dependencies": [
       {
