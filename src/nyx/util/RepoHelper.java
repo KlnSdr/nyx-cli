@@ -43,7 +43,7 @@ public class RepoHelper {
         createDirIfNotExists(repoDir + "/" + group + "/" + name);
         createDirIfNotExists(repoDir + "/" + group + "/" + name + "/" + version);
 
-        return downloadFile(remoteRepoUrl + "/" + name + "/v" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
+        return downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
     }
 
     private boolean downloadFile(String fileURL, String savePath) {
