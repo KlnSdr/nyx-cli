@@ -43,6 +43,27 @@ public class ProjectHelper {
         }
     }
 
+    public static NewJson emptyConfig() {
+        final NewJson projectConfig = new NewJson();
+
+        final NewJson compiler = new NewJson();
+        compiler.setString("version", "21");
+        projectConfig.setJson("compiler", compiler);
+
+        final NewJson project = new NewJson();
+        project.setString("group", "com.example");
+        project.setString("name", "project-name");
+        project.setString("version", "1.0.0");
+        project.setString("entry", "com.example.Main");
+        project.setList("dependencies", List.of());
+        projectConfig.setJson("project", project);
+
+        projectConfig.setString("remoteRepoUrl", "https://repo.klnsdr.com");
+        projectConfig.setList("exclude", List.of());
+
+        return projectConfig;
+    }
+
     private static boolean validateProjectConfig(NewJson projectConfig) {
         if (!projectConfig.hasKeys("compiler", "project")) {
             return false;
