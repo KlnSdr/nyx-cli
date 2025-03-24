@@ -60,6 +60,20 @@ public class BuildGoal implements Goal {
 
         final String classPath = buildClassPath(config, projectDir + "/src");
 
+        LOGGER.info("Extracting JAR dependencies...");
+        final String[] jarDependencies = classPath.split(":");
+        for (String jar : jarDependencies) {
+            if (jar.endsWith(".jar")) {
+                LOGGER.info("Extracting JAR: " + jar);
+                String extractCommand = String.format("unzip -o %s -d %s", jar, buildDir + "/classes");
+                LOGGER.debug("Executing command: " + extractCommand);
+                if (!executeCommand(extractCommand)) {
+                    LOGGER.error("Failed to extract JAR: " + jar);
+                    return GoalResult.FAILURE;
+                }
+            }
+        }
+
         final String buildCommand = String.format(
                 "javac -cp %s -d %s --release %s @sources.list",
                 classPath,
@@ -107,20 +121,6 @@ public class BuildGoal implements Goal {
         if (!copyResources(projectDir + "/src", buildDir + "/classes", config.getExclude())) {
             LOGGER.error("Failed to copy resources");
             return GoalResult.FAILURE;
-        }
-
-        LOGGER.info("Extracting JAR dependencies...");
-        final String[] jarDependencies = classPath.split(":");
-        for (String jar : jarDependencies) {
-            if (jar.endsWith(".jar")) {
-                LOGGER.info("Extracting JAR: " + jar);
-                String extractCommand = String.format("unzip -o %s -d %s", jar, buildDir + "/classes");
-                LOGGER.debug("Executing command: " + extractCommand);
-                if (!executeCommand(extractCommand)) {
-                    LOGGER.error("Failed to extract JAR: " + jar);
-                    return GoalResult.FAILURE;
-                }
-            }
         }
 
         final String jarCommand = String.format(
