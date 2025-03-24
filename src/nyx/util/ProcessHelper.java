@@ -4,6 +4,8 @@ import dobby.util.logging.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessHelper {
     private static final Logger LOGGER = new Logger(ProcessHelper.class, true);
@@ -20,17 +22,22 @@ public class ProcessHelper {
 
             final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+            final List<String> outBuffer = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if (writeToStdout) {
                     System.out.println(line);
                 } else {
                     LOGGER.debug(line);
+                    outBuffer.add(line);
                 }
             }
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
                 LOGGER.error("Failed to execute command \"" + command + "\". Exit code: " + exitCode);
+                for (String outLine : outBuffer) {
+                    LOGGER.error(outLine);
+                }
                 return false;
             }
         } catch (Exception e) {
