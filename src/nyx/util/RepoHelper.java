@@ -31,7 +31,9 @@ public class RepoHelper {
     public boolean existsInRepo(String group, String name, String version) {
         createRepoIfNotExists();
         final File file = new File(repoDir, group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
-        return file.exists();
+        final File jsonFile = new File(repoDir, group + "/" + name + "/" + version + "/nyx.json");
+
+        return file.exists() && jsonFile.exists();
     }
 
     public boolean downloadToRepo(String group, String name, String version) {
@@ -43,7 +45,8 @@ public class RepoHelper {
         createDirIfNotExists(repoDir + "/" + group + "/" + name);
         createDirIfNotExists(repoDir + "/" + group + "/" + name + "/" + version);
 
-        return downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar");
+        return downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar")
+                && downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/nyx.json", repoDir + "/" + group + "/" + name + "/" + version + "/nyx.json");
     }
 
     private boolean downloadFile(String fileURL, String savePath) {
