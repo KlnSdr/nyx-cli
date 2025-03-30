@@ -18,11 +18,18 @@ public class ProjectHelper {
     }
 
     public static ProjectConfig getProjectConfig() {
-        final String projectDir = getProjectDir();
-        final String content;
+        return readConfigFile(getProjectDir());
+    }
 
+    public static ProjectConfig getConfigOfDependency(String group, String name, String version) {
+        final String path = RepoHelper.getRepoDir() + "/" + group + "/" + name + "/" + version;
+        return readConfigFile(path);
+    }
+
+    private static ProjectConfig readConfigFile(String path) {
+        final String content;
         try {
-            final File file = new File(projectDir, "nyx.json");
+            final File file = new File(path, "nyx.json");
             FileInputStream fileInputStream = new FileInputStream(file);
 
             // Read all bytes from the file into a byte array
