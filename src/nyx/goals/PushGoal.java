@@ -1,6 +1,6 @@
 package nyx.goals;
 
-import dobby.util.logging.Logger;
+import common.logger.Logger;
 
 public class PushGoal implements Goal {
     @Override

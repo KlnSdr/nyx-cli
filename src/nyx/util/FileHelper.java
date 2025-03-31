@@ -1,6 +1,6 @@
 package nyx.util;
 
-import dobby.util.logging.Logger;
+import common.logger.Logger;
 
 import java.io.File;
 

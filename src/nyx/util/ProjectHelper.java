@@ -2,7 +2,7 @@ package nyx.util;
 
 import dobby.exceptions.MalformedJsonException;
 import dobby.util.json.NewJson;
-import dobby.util.logging.Logger;
+import common.logger.Logger;
 import nyx.config.ProjectConfig;
 import nyx.exceptions.InvalidConfigException;
 

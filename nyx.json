@@ -11,9 +11,9 @@
     "entry": "nyx.Main",
     "dependencies": [
       {
-        "group": "dobby",
-        "name": "dobby",
-        "version": "1.7"
+        "group": "common",
+        "name": "json",
+        "version": "1.0"
       }
     ]
   }

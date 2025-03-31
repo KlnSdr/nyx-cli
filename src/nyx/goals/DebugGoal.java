@@ -1,7 +1,7 @@
 package nyx.goals;
 
-import dobby.util.logging.LogLevel;
-import dobby.util.logging.Logger;
+import common.logger.LogLevel;
+import common.logger.Logger;
 
 public class DebugGoal implements Goal {
     @Override

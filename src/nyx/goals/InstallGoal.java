@@ -1,6 +1,6 @@
 package nyx.goals;
 
-import dobby.util.logging.Logger;
+import common.logger.Logger;
 import nyx.config.ProjectConfig;
 import nyx.util.ProjectHelper;
 import nyx.util.RepoHelper;

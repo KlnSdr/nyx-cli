@@ -1,7 +1,7 @@
 package nyx;
 
-import dobby.util.logging.LogLevel;
-import dobby.util.logging.Logger;
+import common.logger.LogLevel;
+import common.logger.Logger;
 import nyx.goals.*;
 
 import java.util.Arrays;
