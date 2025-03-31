@@ -40,6 +40,7 @@ public class InstallGoal implements Goal {
 
         final String jarName = config.getProjectName()+ "-" + config.getProjectVersion() + ".jar";
         final File jarFile = new File(ProjectHelper.getProjectDir() + "/build/" + jarName);
+        final File configFile = new File(ProjectHelper.getProjectDir() + "/nyx.json");
 
         final String repoDir = RepoHelper.getRepoDir();
 
@@ -48,11 +49,16 @@ public class InstallGoal implements Goal {
         createDirIfNotExists(repoDir + "/" + config.getProjectGroup() + "/" + config.getProjectName() + "/" + config.getProjectVersion());
 
         final File repoFile = new File(repoDir + "/" + config.getProjectGroup() + "/" + config.getProjectName() + "/" + config.getProjectVersion() + "/" + jarName);
+        final File repoConfigFile = new File(repoDir + "/" + config.getProjectGroup() + "/" + config.getProjectName() + "/" + config.getProjectVersion() + "/nyx.json");
 
         try {
             Files.copy(
                     jarFile.toPath(),
                     repoFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(
+                    configFile.toPath(),
+                    repoConfigFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             LOGGER.error("Failed to install jar file to local repository");
