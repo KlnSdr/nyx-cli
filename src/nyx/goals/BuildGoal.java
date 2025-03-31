@@ -123,13 +123,20 @@ public class BuildGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
-        final String jarCommand = String.format(
-                "jar --create --file %s/%s-%s.jar --main-class=%s -C %s/classes .",
-                buildDir,
-                config.getProjectName(),
-                config.getProjectVersion(),
-                config.getEntryPoint(),
-                buildDir);
+        final String jarCommand = config.getEntryPoint().isEmpty()
+                ? String.format(
+                    "jar --create --file %s/%s-%s.jar -C %s/classes .",
+                    buildDir,
+                    config.getProjectName(),
+                    config.getProjectVersion(),
+                    buildDir)
+                : String.format(
+                    "jar --create --file %s/%s-%s.jar --main-class=%s -C %s/classes .",
+                    buildDir,
+                    config.getProjectName(),
+                    config.getProjectVersion(),
+                    config.getEntryPoint(),
+                    buildDir);
 
         LOGGER.info("creating jar file...");
         LOGGER.debug("Executing command: " + jarCommand);
