@@ -12,6 +12,7 @@ public class HelpGoal implements Goal {
             new HelpGoal(),
             new InitGoal(),
             new InstallGoal(),
+            new LoginGoal(),
             new PushGoal(),
             new RunGoal(),
             new SyncGoal(),

@@ -45,8 +45,8 @@ public class RepoHelper {
         createDirIfNotExists(repoDir + "/" + group + "/" + name);
         createDirIfNotExists(repoDir + "/" + group + "/" + name + "/" + version);
 
-        return downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar")
-                && downloadFile(remoteRepoUrl + "/" + group + "/" + name + "/" + version + "/nyx.json", repoDir + "/" + group + "/" + name + "/" + version + "/nyx.json");
+        return downloadFile(remoteRepoUrl + "/packages/" + group + "/" + name + "/" + version + "/" + name + ".jar", repoDir + "/" + group + "/" + name + "/" + version + "/" + name + "-" + version + ".jar")
+                && downloadFile(remoteRepoUrl + "/packages/" + group + "/" + name + "/" + version + "/nyx.json", repoDir + "/" + group + "/" + name + "/" + version + "/nyx.json");
     }
 
     private boolean downloadFile(String fileURL, String savePath) {
