@@ -35,6 +35,7 @@ public class BuildGoal implements Goal {
 
     @Override
     public GoalResult execute() {
+        final Long startTime = System.currentTimeMillis();
         LOGGER.info("Building project...");
 
         if (new SyncGoal().execute() == GoalResult.FAILURE) {
@@ -154,6 +155,9 @@ public class BuildGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
+        final Long endTime = System.currentTimeMillis();
+        final long duration = endTime - startTime;
+        LOGGER.info("Build completed in " + duration + " ms");
         return GoalResult.SUCCESS;
     }
 
