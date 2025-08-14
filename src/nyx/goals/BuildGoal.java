@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nyx.util.FileHelper.createDirIfNotExists;
 import static nyx.util.ProcessHelper.executeCommand;
@@ -58,7 +59,14 @@ public class BuildGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
-        final String classPath = buildClassPath(config, projectDir + "/src");
+        LOGGER.info("Building project: " + config.getProjectName() + ":" + config.getProjectVersion());
+        final boolean didCopySrc = copySrcToBuildAndReplaceVariables(config);
+        if (!didCopySrc) {
+            LOGGER.error("Failed to copy source files to build directory");
+            return GoalResult.FAILURE;
+        }
+
+        final String classPath = buildClassPath(config, projectDir + "/build/src");
 
         LOGGER.info("Extracting JAR dependencies...");
         final String[] jarDependencies = classPath.split(":");
@@ -118,7 +126,7 @@ public class BuildGoal implements Goal {
 
         LOGGER.info("copying resources...");
 
-        if (!copyResources(projectDir + "/src", buildDir + "/classes", config.getExclude())) {
+        if (!copyResources(buildDir + "/src", buildDir + "/classes", config.getExclude())) {
             LOGGER.error("Failed to copy resources");
             return GoalResult.FAILURE;
         }
@@ -150,7 +158,7 @@ public class BuildGoal implements Goal {
     }
 
     private List<String> findSourceFiles() {
-        String srcDir = "src"; // Change this to match your project structure
+        String srcDir = "build/src";
         List<String> javaFiles;
         try {
             javaFiles = Files.walk(Paths.get(srcDir))
@@ -245,5 +253,67 @@ public class BuildGoal implements Goal {
         classPath.append(projectRoot);
 
         return classPath.toString();
+    }
+
+    private boolean copySrcToBuildAndReplaceVariables(ProjectConfig config) {
+        final String projectDir = getProjectDir();
+        final String srcDir = projectDir + "/src";
+        final String buildSrcDir = projectDir + "/build/src";
+
+        createDirIfNotExists(buildSrcDir);
+
+        LOGGER.info("Copying source files from " + srcDir + " to " + buildSrcDir);
+
+        final File srcFile = new File(srcDir);
+        final File buildSrcFile = new File(buildSrcDir);
+
+        if (!srcFile.exists()) {
+            LOGGER.error("Source directory does not exist: " + srcDir);
+            return false;
+        }
+
+        if (!buildSrcFile.exists()) {
+            LOGGER.error("Build source directory does not exist: " + buildSrcDir);
+            return false;
+        }
+
+        try (final Stream<Path> paths = Files.walk(srcFile.toPath())) {
+            paths
+                .forEach(source -> {
+                    final Path destination = buildSrcFile.toPath().resolve(srcFile.toPath().relativize(source));
+                    try {
+                        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                        if (Files.isDirectory(destination)) {
+                            return;
+                        }
+                        final boolean didReplaceVariables = replaceVariablesInFile(destination, config);
+                        if (!didReplaceVariables) {
+                            LOGGER.error("Failed to replace variables in file: " + destination);
+                        }
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to copy source file: " + source);
+                        LOGGER.trace(e);
+                    }
+                });
+        } catch (IOException e) {
+            LOGGER.error("Failed to copy source files");
+            LOGGER.trace(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean replaceVariablesInFile(Path filePath, ProjectConfig config) {
+        try {
+            String content = new String(Files.readAllBytes(filePath));
+            content = content.replace("{{PROJECT_VERSION}}", config.getProjectVersion());
+            Files.write(filePath, content.getBytes());
+            return true;
+        } catch (IOException e) {
+            LOGGER.error("Failed to replace variables in file: " + filePath);
+            LOGGER.trace(e);
+            return false;
+        }
     }
 }
