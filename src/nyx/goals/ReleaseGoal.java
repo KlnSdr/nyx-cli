@@ -2,6 +2,7 @@ package nyx.goals;
 
 import common.logger.Logger;
 import nyx.config.ProjectConfig;
+import nyx.util.Git;
 import nyx.util.ProjectHelper;
 
 import java.io.IOException;
@@ -48,6 +49,17 @@ public class ReleaseGoal implements Goal {
         } catch (IOException e) {
             LOGGER.error("Failed to write to project config file");
             LOGGER.trace(e);
+            return GoalResult.FAILURE;
+        }
+
+        final boolean didCommit = new Git()
+                .add("nyx.json")
+                .commit("[prepare for release] bump version to " + nextVersion)
+                .tag("v" + nextVersion)
+                .execute();
+
+        if (!didCommit) {
+            LOGGER.error("Failed to commit changes to git");
             return GoalResult.FAILURE;
         }
 

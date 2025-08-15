@@ -2,6 +2,7 @@ package nyx.goals;
 
 import common.logger.Logger;
 import nyx.config.ProjectConfig;
+import nyx.util.Git;
 import nyx.util.ProjectHelper;
 
 import java.io.IOException;
@@ -51,6 +52,15 @@ public class SnapshotGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
+        final boolean didCommit = new Git()
+                .add("nyx.json")
+                .commit("[prepare for next development iteration] bump version to " + nextVersion)
+                .execute();
+
+        if (!didCommit) {
+            LOGGER.error("Failed to commit changes to git");
+            return GoalResult.FAILURE;
+        }
         return GoalResult.SUCCESS;
     }
 
