@@ -31,4 +31,12 @@ public class Dependency {
     public String getVersion() {
         return version;
     }
+
+    public NewJson toJson() {
+        NewJson json = new NewJson();
+        json.setString("group", group);
+        json.setString("name", name);
+        json.setString("version", version);
+        return json;
+    }
 }

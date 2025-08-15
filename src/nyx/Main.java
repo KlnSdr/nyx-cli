@@ -61,13 +61,31 @@ public class Main {
                 return new DependeciesGoal();
             case "login":
                 return new LoginGoal();
+            case "release":
+                return new ReleaseGoal();
+            case "snapshot":
+                return new SnapshotGoal();
             default:
                 return null;
         }
     }
 
     private static boolean isKnownGoal(String goal) {
-        final String[] knownGoals = {"sync", "build", "install", "push", "clean", "run", "version", "debug", "help", "init", "dependencies", "login"};
+        final String[] knownGoals = {
+                "sync",
+                "build",
+                "install",
+                "push",
+                "clean",
+                "run",
+                "version",
+                "debug",
+                "help",
+                "init",
+                "dependencies",
+                "login",
+                "release",
+                "snapshot"};
         return Arrays.asList(knownGoals).contains(goal);
     }
 }

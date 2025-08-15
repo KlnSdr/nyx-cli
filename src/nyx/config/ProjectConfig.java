@@ -10,7 +10,7 @@ public class ProjectConfig {
     private final String remoteRepoUrl;
     private final String projectGroup;
     private final String projectName;
-    private final String projectVersion;
+    private String projectVersion;
     private final String entryPoint;
     private final List<Dependency> dependencies;
     private final List<String> exclude;
@@ -59,6 +59,10 @@ public class ProjectConfig {
         return projectVersion;
     }
 
+    public void setProjectVersion(String projectVersion) {
+        this.projectVersion = projectVersion;
+    }
+
     public String getEntryPoint() {
         return entryPoint;
     }
@@ -69,5 +73,25 @@ public class ProjectConfig {
 
     public List<String> getExclude() {
         return exclude;
+    }
+
+    public NewJson toJson() {
+        final NewJson config = new NewJson();
+
+        final NewJson compiler = new NewJson();
+        compiler.setString("version", compilerVersion);
+
+        final NewJson project = new NewJson();
+        project.setString("group", projectGroup);
+        project.setString("name", projectName);
+        project.setString("version", projectVersion);
+        project.setString("entry", entryPoint);
+        project.setList("dependencies", dependencies.stream().map(Dependency::toJson).collect(Collectors.toList()));
+
+        config.setJson("compiler", compiler);
+        config.setString("remoteRepoUrl", remoteRepoUrl);
+        config.setJson("project", project);
+        config.setList("exclude", exclude.stream().map(o -> (Object) o).collect(Collectors.toList()));
+        return config;
     }
 }
