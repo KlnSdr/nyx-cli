@@ -311,7 +311,7 @@ public class BuildGoal implements Goal {
     private boolean replaceVariablesInFile(Path filePath, ProjectConfig config) {
         try {
             String content = new String(Files.readAllBytes(filePath));
-            content = content.replace("{{PROJECT_VERSION}}", config.getProjectVersion());
+            content = content.replace("${PROJECT_VERSION}", config.getProjectVersion());
             Files.write(filePath, content.getBytes());
             return true;
         } catch (IOException e) {

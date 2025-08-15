@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Main {
     private static final Logger LOGGER = new Logger(Main.class, true);
-    public static final String VERSION = "{{PROJECT_VERSION}}";
+    public static final String VERSION = "${PROJECT_VERSION}";
 
     public static void main(String[] args) {
         Logger.setMaxLogLevel(LogLevel.INFO);
