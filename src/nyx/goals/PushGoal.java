@@ -30,10 +30,6 @@ public class PushGoal implements Goal {
 
     @Override
     public GoalResult execute() {
-        if (new BuildGoal().execute() == GoalResult.FAILURE) {
-            return GoalResult.FAILURE;
-        }
-
         final ProjectConfig config = ProjectHelper.getProjectConfig();
 
         if (config == null) {
@@ -54,9 +50,13 @@ public class PushGoal implements Goal {
         final File artifactFile = new File(projectDir + "/build/" + config.getProjectName() + "-" + config.getProjectVersion() + ".jar");
         final File nyxJsonFile = new File(projectDir + "/nyx.json");
 
-        if (!artifactFile.exists() || !nyxJsonFile.exists()) {
-            LOGGER.error("Artifact or nyx.json file does not exist");
-            return GoalResult.FAILURE;
+        if (!artifactFile.exists()) {
+            LOGGER.warn(artifactFile.getAbsolutePath() + " does not exist. Attempting to build the project first.");
+            final GoalResult buildResult = new BuildGoal().execute();
+            if (buildResult == GoalResult.FAILURE) {
+                LOGGER.error("Failed to build the project. Please run 'build' goal first.");
+                return GoalResult.FAILURE;
+            }
         }
 
         final String boundary = Long.toHexString(System.currentTimeMillis()) + UUID.randomUUID().toString().replace("-", "");

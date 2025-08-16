@@ -34,8 +34,12 @@ public class RunGoal implements Goal {
         final String jarPath = ProjectHelper.getProjectDir() + "/build/" + jarName;
 
         if (!new File(jarPath).exists()) {
-            logger.error("Jar file does not exist. Run the build goal first.");
-            return GoalResult.FAILURE;
+            logger.warn("Jar file not found: " + jarPath);
+            logger.info("Running 'build' goal to create the jar file.");
+            final GoalResult buildResult = new BuildGoal().execute();
+            if (buildResult == GoalResult.FAILURE) {
+                return GoalResult.FAILURE;
+            }
         }
 
         final String runCommand = String.format("java -jar %s", jarPath);
