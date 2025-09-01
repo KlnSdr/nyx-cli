@@ -34,8 +34,9 @@ public class HelpGoal implements Goal {
 
     @Override
     public GoalResult execute() {
+        int maxLength = goals.stream().mapToInt(g -> g.getName().length()).max().orElse(0);
         for (Goal goal : goals) {
-            System.out.println(goal.getName() + " - " + goal.getHelp());
+            System.out.println(goal.getName() + " ".repeat(maxLength - goal.getName().length()) + "\t" + goal.getHelp());
         }
 
         return GoalResult.SUCCESS;
