@@ -44,8 +44,6 @@ public class RunGoal implements Goal {
 
         final String runCommand = String.format("java -jar %s", jarPath);
 
-        executeCommand(runCommand, true);
-
-        return GoalResult.SUCCESS;
+        return executeCommand(runCommand, true) ? GoalResult.SUCCESS : GoalResult.FAILURE;
     }
 }
