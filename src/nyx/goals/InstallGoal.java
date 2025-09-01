@@ -31,6 +31,10 @@ public class InstallGoal implements Goal {
             return GoalResult.FAILURE;
         }
 
+        if (new TestGoal().execute() == GoalResult.FAILURE) {
+            return GoalResult.FAILURE;
+        }
+
         final ProjectConfig config = ProjectHelper.getProjectConfig();
 
         if (config == null) {
@@ -65,6 +69,7 @@ public class InstallGoal implements Goal {
             LOGGER.trace(e);
             return GoalResult.FAILURE;
         }
+        LOGGER.info("Installed " + jarName + " to local repository.");
 
         return GoalResult.SUCCESS;
     }

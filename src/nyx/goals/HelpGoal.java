@@ -18,6 +18,7 @@ public class HelpGoal implements Goal {
             new RunGoal(),
             new SnapshotGoal(),
             new SyncGoal(),
+            new TestGoal(),
             new VersionGoal()
     );
 

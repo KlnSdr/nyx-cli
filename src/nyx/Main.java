@@ -65,6 +65,8 @@ public class Main {
                 return new ReleaseGoal();
             case "snapshot":
                 return new SnapshotGoal();
+            case "test":
+                return new TestGoal();
             default:
                 return null;
         }
@@ -85,7 +87,8 @@ public class Main {
                 "dependencies",
                 "login",
                 "release",
-                "snapshot"};
+                "snapshot",
+                "test"};
         return Arrays.asList(knownGoals).contains(goal);
     }
 }
