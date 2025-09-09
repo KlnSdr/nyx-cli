@@ -42,7 +42,7 @@ public class SyncGoal implements Goal {
             final String version = dependency.getVersion();
             LOGGER.info("syncing dependency: " + group + ":" + name + ":" + version);
 
-            if (!repo.existsInRepo(group, name, version)) {
+            if (!repo.existsInRepo(group, name, version) || version.toLowerCase().endsWith("-snapshot")) {
                 final boolean success = repo.downloadToRepo(group, name, version);
 
                 if (!success) {
