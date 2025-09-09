@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,6 +69,7 @@ public class BuildGoal implements Goal {
         }
 
         final String classPath = buildClassPath(config, projectDir + "/build/src");
+        LOGGER.debug("Constructed classpath: " + classPath);
 
         LOGGER.info("Extracting JAR dependencies...");
         final String[] jarDependencies = classPath.split(":");
@@ -231,8 +233,12 @@ public class BuildGoal implements Goal {
     private String buildClassPath(ProjectConfig config, String projectRoot) {
         final StringBuilder classPath = new StringBuilder();
 
+        classPath.append(projectRoot);
+        classPath.append(":");
+
         final String repoDir = RepoHelper.getRepoDir();
         final List<Dependency> dependencies = config.getDependencies();
+        Collections.reverse(dependencies);
 
         for (Dependency dependency : dependencies) {
             final String group = dependency.getGroup();
@@ -254,7 +260,9 @@ public class BuildGoal implements Goal {
                     .append(":");
         }
 
-        classPath.append(projectRoot);
+        if (classPath.charAt(classPath.length() - 1) == ':') {
+            classPath.deleteCharAt(classPath.length() - 1);
+        }
 
         return classPath.toString();
     }
