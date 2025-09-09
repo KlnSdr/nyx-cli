@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,7 +74,11 @@ public class BuildGoal implements Goal {
 
         LOGGER.info("Extracting JAR dependencies...");
         final String[] jarDependencies = classPath.split(":");
-        for (String jar : jarDependencies) {
+        final List<String> jarList = Arrays.asList(jarDependencies);
+        Collections.reverse(jarList);
+        final String[] reversedJarDependencies = jarList.toArray(new String[0]);
+
+        for (String jar : reversedJarDependencies) {
             if (jar.endsWith(".jar")) {
                 LOGGER.info("Extracting JAR: " + jar);
                 String extractCommand = String.format("unzip -o %s -d %s", jar, buildDir + "/classes");
