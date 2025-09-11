@@ -67,6 +67,8 @@ public class Main {
                 return new SnapshotGoal();
             case "test":
                 return new TestGoal();
+            case "force":
+                return new ForceGoal();
             default:
                 return null;
         }
@@ -88,7 +90,9 @@ public class Main {
                 "login",
                 "release",
                 "snapshot",
-                "test"};
+                "test",
+                "force"
+        };
         return Arrays.asList(knownGoals).contains(goal);
     }
 }

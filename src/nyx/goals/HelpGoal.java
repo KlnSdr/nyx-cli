@@ -9,6 +9,7 @@ public class HelpGoal implements Goal {
             new CleanGoal(),
             new DebugGoal(),
             new DependeciesGoal(),
+            new ForceGoal(),
             new HelpGoal(),
             new InitGoal(),
             new InstallGoal(),
