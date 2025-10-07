@@ -5,7 +5,7 @@ public class ForceGoal implements Goal {
 
     @Override
     public String getHelp() {
-        return "Sets the force flag to true, effects differ based on the goal. Some goals may not be affected by this flag.";
+        return "Sets the force flag to true, effects differ based on the goal. Some goals may not be affected by this flag. Flag resets after use by a goal.";
     }
 
     @Override
@@ -19,7 +19,10 @@ public class ForceGoal implements Goal {
         return GoalResult.SUCCESS;
     }
 
+    /// Returns true if the force flag is set, and resets it to false.
     public static boolean isForce() {
-        return FORCE;
+        final boolean value = FORCE;
+        FORCE = false; // reset after use
+        return value;
     }
 }
