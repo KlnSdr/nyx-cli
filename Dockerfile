@@ -4,6 +4,6 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends unzip git openssh-client && rm -rf /var/lib/apt/lists/*
 
-COPY build/nyx-cli-1.4-snapshot.jar /app/nyx.jar
+COPY build/nyx-cli-1.5-snapshot.jar /app/nyx.jar
 COPY nyx-docker.sh /usr/local/bin/nyx
 RUN chmod +x /usr/local/bin/nyx
