@@ -1,1 +1,1 @@
-{"remoteRepoUrl": "https://repo.klnsdr.com", "project": {"entry": "nyx.Main", "name": "nyx-cli", "version": "1.4", "group": "nyx", "dependencies": [{"name": "json", "version": "1.0", "group": "common"}]}, "compiler": {"version": "11"}, "exclude": []}
+{"remoteRepoUrl": "https://repo.klnsdr.com", "project": {"entry": "nyx.Main", "name": "nyx-cli", "version": "1.5-snapshot", "group": "nyx", "dependencies": [{"name": "json", "version": "1.0", "group": "common"}]}, "compiler": {"version": "11"}, "exclude": []}
