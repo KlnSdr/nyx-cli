@@ -91,7 +91,7 @@ public class BuildGoal implements Goal {
         }
 
         final String buildCommand = String.format(
-                "javac -cp %s -d %s --release %s @sources.list",
+                "javac -cp %s -d %s --release %s -parameters @sources.list",
                 classPath,
                 buildDir + "/classes",
                 config.getCompilerVersion());
