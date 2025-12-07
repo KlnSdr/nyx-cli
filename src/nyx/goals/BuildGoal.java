@@ -24,6 +24,19 @@ import static nyx.util.ProjectHelper.getProjectDir;
 
 public class BuildGoal implements Goal {
     private static final Logger LOGGER = new Logger(BuildGoal.class, true);
+    private static final String[] whitelistExtensions = {
+            ".java",
+            ".xml",
+            ".properties",
+            ".txt",
+            ".md",
+            ".json",
+            ".yml",
+            ".yaml",
+            ".html",
+            ".css",
+            ".js",
+    };
 
     @Override
     public String getHelp() {
@@ -300,7 +313,7 @@ public class BuildGoal implements Goal {
                     final Path destination = buildSrcFile.toPath().resolve(srcFile.toPath().relativize(source));
                     try {
                         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                        if (Files.isDirectory(destination)) {
+                        if (Files.isDirectory(destination) || !isFileOnWhitelistForVariableReplacement(destination)) {
                             return;
                         }
                         final boolean didReplaceVariables = replaceVariablesInFile(destination, config);
@@ -319,6 +332,12 @@ public class BuildGoal implements Goal {
         }
 
         return true;
+    }
+
+    private boolean isFileOnWhitelistForVariableReplacement(Path filePath) {
+        final String[] splittedFilePath = filePath.getFileName().toString().toLowerCase().split("\\.");
+        final String fileName = splittedFilePath[splittedFilePath.length - 1];
+        return Arrays.stream(whitelistExtensions).anyMatch(fileName::endsWith);
     }
 
     private boolean replaceVariablesInFile(Path filePath, ProjectConfig config) {
