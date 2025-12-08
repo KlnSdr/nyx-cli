@@ -13,12 +13,17 @@ import java.util.List;
 
 public class ProjectHelper {
     private static final Logger LOGGER = new Logger(ProjectHelper.class, true);
+    private static ProjectConfig cachedConfig;
+
     public static String getProjectDir() {
         return System.getProperty("user.dir");
     }
 
     public static ProjectConfig getProjectConfig() {
-        return readConfigFile(getProjectDir());
+        if (cachedConfig == null) {
+            cachedConfig = readConfigFile(getProjectDir());
+        }
+        return cachedConfig;
     }
 
     public static ProjectConfig getConfigOfDependency(String group, String name, String version) {
@@ -31,18 +36,10 @@ public class ProjectHelper {
         try {
             final File file = new File(path, "nyx.json");
             FileInputStream fileInputStream = new FileInputStream(file);
-
-            // Read all bytes from the file into a byte array
             content = new String(fileInputStream.readAllBytes());
-
-            // Close the resource
             fileInputStream.close();
-            final NewJson projectConfig = NewJson.parse(content);
-            if (validateProjectConfig(projectConfig)) {
-                return ProjectConfig.fromJson(projectConfig);
-            } else {
-                throw new InvalidConfigException();
-            }
+            final NewJson projectConfig = validateProjectConfig(NewJson.parse(content));
+            return ProjectConfig.fromJson(projectConfig);
         } catch (IOException | MalformedJsonException | InvalidConfigException e) {
             LOGGER.error("Failed to read nyx.json file");
             LOGGER.trace(e);
@@ -72,47 +69,60 @@ public class ProjectHelper {
         return projectConfig;
     }
 
-    private static boolean validateProjectConfig(NewJson projectConfig) {
+    private static NewJson validateProjectConfig(NewJson projectConfig) throws InvalidConfigException {
         if (!projectConfig.hasKeys("compiler", "project")) {
-            return false;
+            throw new InvalidConfigException("Missing 'compiler' or 'project' section");
         }
 
         if (!projectConfig.hasKeys("remoteRepoUrl")) {
-            return false;
+            throw new InvalidConfigException("Missing 'remoteRepoUrl' field");
         }
 
         if (!projectConfig.hasKey("compiler.version")) {
-            return false;
+            LOGGER.warn("Missing 'compiler.version' field, defaulting to '21'");
+            projectConfig.setString("compiler.version", "21");
         }
 
         if (!projectConfig.hasKey("exclude")) {
-            return false;
+            LOGGER.warn("Missing 'exclude' field, defaulting to empty list");
+            projectConfig.setList("exclude", List.of());
         }
 
         if (!projectConfig.hasKey("replaceVarsIn")) {
-            return false;
+            LOGGER.warn("Missing 'replaceVarsIn' field, defaulting to empty list");
+            projectConfig.setList("replaceVarsIn", List.of());
         }
 
-        if (!projectConfig.hasKeys("project.name", "project.dependencies", "project.version", "project.entry", "project.group")) {
-            return false;
+        if (!projectConfig.hasKeys("project.name", "project.version", "project.group")) {
+            throw new InvalidConfigException("Missing one of the required project fields: 'name', 'group' or 'version'");
+        }
+
+        if (!projectConfig.hasKey("project.entry")) {
+            LOGGER.warn("Missing 'project.entry' field, defaulting to empty string (no entry point)");
+            projectConfig.setString("project.entry", "");
+        }
+
+        if (!projectConfig.hasKey("project.dependencies")) {
+            LOGGER.warn("Missing 'project.dependencies' field, defaulting to empty list");
+            projectConfig.setList("project.dependencies", List.of());
         }
 
         final List<Object> dependencies = projectConfig.getList("project.dependencies");
 
         if (dependencies == null) {
-            return false;
+            throw new InvalidConfigException("'project.dependencies' must be a list");
         }
 
         for (Object dependency : dependencies) {
             if (!(dependency instanceof NewJson)) {
-                return false;
+                throw new InvalidConfigException("Each dependency must be a JSON object");
             }
 
             if (!((NewJson) dependency).hasKeys("name", "version", "group")) {
-                return false;
+                throw new InvalidConfigException("Each dependency must have 'name', 'version', and 'group' fields");
             }
         }
 
-        return true;
+        return projectConfig;
     }
 }

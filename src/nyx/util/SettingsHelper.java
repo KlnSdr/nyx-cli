@@ -48,7 +48,7 @@ public class SettingsHelper {
             if (validateSettingsFile(settings)) {
                 return Settings.fromJson(settings);
             } else {
-                throw new InvalidConfigException();
+                throw new InvalidConfigException("Settings file is invalid");
             }
         } catch (IOException | MalformedJsonException | InvalidConfigException e) {
             return null;
