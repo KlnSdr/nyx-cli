@@ -14,8 +14,9 @@ public class ProjectConfig {
     private final String entryPoint;
     private final List<Dependency> dependencies;
     private final List<String> exclude;
+    private final List<String> replaceVarsIn;
 
-    public ProjectConfig(String compilerVersion, String remoteRepoUrl, String projectGroup, String projectName, String projectVersion, String entryPoint, List<Dependency> dependencies, List<String> exclude) {
+    public ProjectConfig(String compilerVersion, String remoteRepoUrl, String projectGroup, String projectName, String projectVersion, String entryPoint, List<Dependency> dependencies, List<String> exclude, List<String> replaceVarsIn) {
         this.compilerVersion = compilerVersion;
         this.remoteRepoUrl = remoteRepoUrl;
         this.projectGroup = projectGroup;
@@ -24,6 +25,7 @@ public class ProjectConfig {
         this.entryPoint = entryPoint;
         this.dependencies = dependencies;
         this.exclude = exclude;
+        this.replaceVarsIn = replaceVarsIn;
     }
 
     public static ProjectConfig fromJson(NewJson json) {
@@ -35,7 +37,8 @@ public class ProjectConfig {
                 json.getString("project.version"),
                 json.getString("project.entry"),
                 json.getList("project.dependencies").stream().map(o -> (NewJson) o).map(Dependency::fromJson).collect(Collectors.toList()),
-                json.getList("exclude").stream().map(Object::toString).collect(Collectors.toList())
+                json.getList("exclude").stream().map(Object::toString).collect(Collectors.toList()),
+                json.getList("replaceVarsIn").stream().map(Object::toString).collect(Collectors.toList())
         );
     }
 
@@ -75,6 +78,10 @@ public class ProjectConfig {
         return exclude;
     }
 
+    public List<String> getReplaceVarsIn() {
+        return replaceVarsIn;
+    }
+
     public NewJson toJson() {
         final NewJson config = new NewJson();
 
@@ -92,6 +99,7 @@ public class ProjectConfig {
         config.setString("remoteRepoUrl", remoteRepoUrl);
         config.setJson("project", project);
         config.setList("exclude", exclude.stream().map(o -> (Object) o).collect(Collectors.toList()));
+        config.setList("replaceVarsIn", replaceVarsIn.stream().map(o -> (Object) o).collect(Collectors.toList()));
         return config;
     }
 }

@@ -25,17 +25,17 @@ import static nyx.util.ProjectHelper.getProjectDir;
 public class BuildGoal implements Goal {
     private static final Logger LOGGER = new Logger(BuildGoal.class, true);
     private static final String[] whitelistExtensions = {
-            ".java",
-            ".xml",
-            ".properties",
-            ".txt",
-            ".md",
-            ".json",
-            ".yml",
-            ".yaml",
-            ".html",
-            ".css",
-            ".js",
+            "java",
+            "xml",
+            "properties",
+            "txt",
+            "md",
+            "json",
+            "yml",
+            "yaml",
+            "html",
+            "css",
+            "js",
     };
 
     @Override
@@ -313,9 +313,10 @@ public class BuildGoal implements Goal {
                     final Path destination = buildSrcFile.toPath().resolve(srcFile.toPath().relativize(source));
                     try {
                         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                        if (Files.isDirectory(destination) || !isFileOnWhitelistForVariableReplacement(destination)) {
+                        if (Files.isDirectory(destination) || !isFileOnWhitelistForVariableReplacement(destination, config)) {
                             return;
                         }
+                        LOGGER.debug("Replacing variables in file: " + destination);
                         final boolean didReplaceVariables = replaceVariablesInFile(destination, config);
                         if (!didReplaceVariables) {
                             LOGGER.error("Failed to replace variables in file: " + destination);
@@ -334,10 +335,10 @@ public class BuildGoal implements Goal {
         return true;
     }
 
-    private boolean isFileOnWhitelistForVariableReplacement(Path filePath) {
+    private boolean isFileOnWhitelistForVariableReplacement(Path filePath, ProjectConfig config) {
         final String[] splittedFilePath = filePath.getFileName().toString().toLowerCase().split("\\.");
-        final String fileName = splittedFilePath[splittedFilePath.length - 1];
-        return Arrays.stream(whitelistExtensions).anyMatch(fileName::endsWith);
+        final String extention = splittedFilePath[splittedFilePath.length - 1];
+        return Arrays.asList(whitelistExtensions).contains(extention) || config.getReplaceVarsIn().contains(extention);
     }
 
     private boolean replaceVariablesInFile(Path filePath, ProjectConfig config) {
