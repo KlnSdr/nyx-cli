@@ -309,11 +309,30 @@ public class BuildGoal implements Goal {
 
         try (final Stream<Path> paths = Files.walk(srcFile.toPath())) {
             paths
+                .filter(Files::isDirectory)
+                .forEach(source -> {
+                    final Path destination = buildSrcFile.toPath().resolve(srcFile.toPath().relativize(source));
+                    try {
+                        Files.createDirectories(destination);
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to copy source file: " + source);
+                        LOGGER.trace(e);
+                    }
+                });
+        } catch (IOException e) {
+            LOGGER.error("Failed to copy source files");
+            LOGGER.trace(e);
+            return false;
+        }
+
+        try (final Stream<Path> paths = Files.walk(srcFile.toPath())) {
+            paths
+                .filter(Files::isRegularFile)
                 .forEach(source -> {
                     final Path destination = buildSrcFile.toPath().resolve(srcFile.toPath().relativize(source));
                     try {
                         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                        if (Files.isDirectory(destination) || !isFileOnWhitelistForVariableReplacement(destination, config)) {
+                        if (!isFileOnWhitelistForVariableReplacement(destination, config)) {
                             return;
                         }
                         LOGGER.debug("Replacing variables in file: " + destination);

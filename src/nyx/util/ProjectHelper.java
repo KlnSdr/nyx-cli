@@ -64,7 +64,7 @@ public class ProjectHelper {
 
         projectConfig.setString("remoteRepoUrl", "https://repo.klnsdr.com");
         projectConfig.setList("exclude", List.of());
-        project.setList("replaceVarsIn", List.of());
+        projectConfig.setList("replaceVarsIn", List.of());
 
         return projectConfig;
     }
