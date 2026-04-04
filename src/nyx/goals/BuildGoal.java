@@ -355,9 +355,12 @@ public class BuildGoal implements Goal {
     }
 
     private boolean isFileOnWhitelistForVariableReplacement(Path filePath, ProjectConfig config) {
+        if (filePath.getFileName().toString().toLowerCase().endsWith("buildgoal.java")) {
+            return false;
+        }
         final String[] splittedFilePath = filePath.getFileName().toString().toLowerCase().split("\\.");
-        final String extention = splittedFilePath[splittedFilePath.length - 1];
-        return Arrays.asList(whitelistExtensions).contains(extention) || config.getReplaceVarsIn().contains(extention);
+        final String extension = splittedFilePath[splittedFilePath.length - 1];
+        return Arrays.asList(whitelistExtensions).contains(extension) || config.getReplaceVarsIn().contains(extension);
     }
 
     private boolean replaceVariablesInFile(Path filePath, ProjectConfig config) {
